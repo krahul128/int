@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    environment {
+        // Define any necessary environment variables here
+        DOCKER_IMAGE_NAME = 'web-app:latest'
+    }
+
+    stages {
+        stage('Code') {
+            steps {
+                // Checkout code from the version control system (e.g., Git)
+                git url: 'https://github.com/krahul128/int.git', branch: 'main'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build the Docker image using the Dockerfile
+                    sh "docker build -t web-app:latest ."
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Cleanup steps, if any
+            echo 'Cleaning up...'
+        }
+        success {
+            echo 'Pipeline completed successfully.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
+
